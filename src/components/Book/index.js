@@ -8,6 +8,7 @@ import {
   Select,
   Button,
 } from "@material-ui/core";
+import moment from "moment";
 import { flightTypes } from "../../constants/flights";
 
 const useStyles = makeStyles((theme) => ({
@@ -43,11 +44,18 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "space-evenly",
   },
   button: {
-      height: "56px"
-  }
+    height: "56px",
+  },
 }));
 
-const Book = ({}) => {
+const Book = ({
+  flightType,
+  setFlightType,
+  startDate,
+  setStartDate,
+  returnDate,
+  setReturnDate,
+}) => {
   const classes = useStyles();
 
   const renderOptions = () =>
@@ -56,6 +64,28 @@ const Book = ({}) => {
         {flight.label}
       </option>
     ));
+
+  const validateFlight = () => (flightType == 0 ? true : false);
+
+  const validateBook = () => {
+    let startTimestamps = moment(startDate).format("x");
+    let returnTimestamps = moment(returnDate).format("x");
+
+    if (flightType == 0) {
+      return false;
+    } else if (startTimestamps > returnTimestamps) {
+      return true;
+    } else if (!validateDateFormat(returnDate)) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  const validateDateFormat = (string) => {
+    let regex = /^\s*(3[01]|[12][0-9]|0?[1-9])\.(1[012]|0?[1-9])\.((?:19|20)\d{2})\s*$/g;
+    return regex.test(string);
+  };
 
   return (
     <div className={classes.root}>
@@ -71,8 +101,8 @@ const Book = ({}) => {
             <FormControl variant="outlined" className={classes.formControl}>
               <Select
                 native
-                value={0}
-                onChange={() => {}}
+                value={flightType}
+                onChange={(e) => setFlightType(e.target.value)}
                 inputProps={{
                   name: "flightType",
                   id: "outlined-age-native-simple",
@@ -81,9 +111,27 @@ const Book = ({}) => {
               >
                 {renderOptions()}
               </Select>
-              <TextField className={classes.input} variant="filled" />
-              <TextField variant="filled" className={classes.input} />
-              <Button variant="contained" className={classes.button}>
+              <TextField
+                className={classes.input}
+                error={!validateDateFormat(startDate)}
+                variant="filled"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+              />
+              <TextField
+                variant="filled"
+                className={classes.input}
+                error={!validateDateFormat(returnDate)}
+                value={returnDate}
+                disabled={validateFlight()}
+                onChange={(e) => setReturnDate(e.target.value)}
+              />
+              <Button
+                variant="contained"
+                disabled={validateBook()}
+                className={classes.button}
+                onClick={() => validateBook()}
+              >
                 Book
               </Button>
             </FormControl>
