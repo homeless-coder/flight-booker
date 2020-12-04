@@ -46,6 +46,9 @@ const useStyles = makeStyles((theme) => ({
   button: {
     height: "56px",
   },
+  error: {
+    backgroundColor: "red"
+  }
 }));
 
 const Book = ({
@@ -87,6 +90,15 @@ const Book = ({
     return regex.test(string);
   };
 
+  const showAlert = () => {
+      validateBook()
+      if(flightType === 0){
+          alert(`You have booked a one-way flight for ${startDate}`)
+      } else {
+          alert(`You have booked a return flight from ${startDate} to ${returnDate}`)
+      }
+  }
+
   return (
     <div className={classes.root}>
       <Grid container spacing={3} className={classes.container}>
@@ -112,7 +124,7 @@ const Book = ({
                 {renderOptions()}
               </Select>
               <TextField
-                className={classes.input}
+                className={[classes.input, !validateDateFormat(startDate) ? classes.error : null]}
                 error={!validateDateFormat(startDate)}
                 variant="filled"
                 value={startDate}
@@ -120,7 +132,7 @@ const Book = ({
               />
               <TextField
                 variant="filled"
-                className={classes.input}
+                className={[classes.input, !validateDateFormat(returnDate) ? classes.error : null]}
                 error={!validateDateFormat(returnDate)}
                 value={returnDate}
                 disabled={validateFlight()}
@@ -130,7 +142,7 @@ const Book = ({
                 variant="contained"
                 disabled={validateBook()}
                 className={classes.button}
-                onClick={() => validateBook()}
+                onClick={() => showAlert()}
               >
                 Book
               </Button>
