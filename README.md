@@ -1,4 +1,4 @@
-# Counter with React JS
+# Flight Booker with React JS
 
 Clone the project on your personal computer.
 
