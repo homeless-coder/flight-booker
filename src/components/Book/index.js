@@ -85,6 +85,12 @@ const Book = ({
     }
   };
 
+  const validateButton = () => {
+    if (!validateDateFormat(returnDate) || !validateDateFormat(startDate)){
+      return true
+    }
+  }
+
   const validateDateFormat = (string) => {
     let regex = /^\s*(3[01]|[12][0-9]|0?[1-9])\.(1[012]|0?[1-9])\.((?:19|20)\d{2})\s*$/g;
     return regex.test(string);
@@ -92,7 +98,7 @@ const Book = ({
 
   const showAlert = () => {
       validateBook()
-      if(flightType === 0){
+      if(flightType == 0){
           alert(`You have booked a one-way flight for ${startDate}`)
       } else {
           alert(`You have booked a return flight from ${startDate} to ${returnDate}`)
@@ -140,7 +146,7 @@ const Book = ({
               />
               <Button
                 variant="contained"
-                disabled={validateBook()}
+                disabled={validateBook() || validateButton()}
                 className={classes.button}
                 onClick={() => showAlert()}
               >
